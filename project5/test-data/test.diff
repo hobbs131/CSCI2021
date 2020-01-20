@@ -1,0 +1,168 @@
+MALLOC 1-4
+HEAP STATS							MALLOC 1-4
+Heap bytes: 1024						HEAP STATS
+AVAILABLE LIST: blocklist{length:      1  bytes:    216}	Heap bytes: 1024
+  [  0] head @    808 {state: a  size:    176}  foot @   1016	AVAILABLE LIST: blocklist{length:      1  bytes:    216}
+USED LIST: blocklist{length:      4  bytes:    808}		  [  0] head @    808 {state: a  size:    176}  foot @   1016
+  [  0] head @    568 {state: u  size:    200}  foot @    800	USED LIST: blocklist{length:      4  bytes:    808}
+  [  1] head @    464 {state: u  size:     64}  foot @    560	  [  0] head @    568 {state: u  size:    200}  foot @    800
+  [  2] head @    168 {state: u  size:    256}  foot @    456	  [  1] head @    464 {state: u  size:     64}  foot @    560
+  [  3] head @      0 {state: u  size:    128}  foot @    160	  [  2] head @    168 {state: u  size:    256}  foot @    456
+								  [  3] head @      0 {state: u  size:    128}  foot @    160
+POINTERS
+ptr[ 0]: 32 from heap start					POINTERS
+ptr[ 1]: 200 from heap start					ptr[ 0]: 32 from heap start
+ptr[ 2]: 496 from heap start					ptr[ 1]: 200 from heap start
+ptr[ 3]: 600 from heap start					ptr[ 2]: 496 from heap start
+								ptr[ 3]: 600 from heap start
+FREE 2
+HEAP STATS							FREE 2
+Heap bytes: 1024						HEAP STATS
+AVAILABLE LIST: blocklist{length:      2  bytes:    320}	Heap bytes: 1024
+  [  0] head @    464 {state: a  size:     64}  foot @    560	AVAILABLE LIST: blocklist{length:      2  bytes:    320}
+  [  1] head @    808 {state: a  size:    176}  foot @   1016	  [  0] head @    464 {state: a  size:     64}  foot @    560
+USED LIST: blocklist{length:      3  bytes:    704}		  [  1] head @    808 {state: a  size:    176}  foot @   1016
+  [  0] head @    568 {state: u  size:    200}  foot @    800	USED LIST: blocklist{length:      3  bytes:    704}
+  [  1] head @    168 {state: u  size:    256}  foot @    456	  [  0] head @    568 {state: u  size:    200}  foot @    800
+  [  2] head @      0 {state: u  size:    128}  foot @    160	  [  1] head @    168 {state: u  size:    256}  foot @    456
+								  [  2] head @      0 {state: u  size:    128}  foot @    160
+POINTERS
+ptr[ 0]: 32 from heap start					POINTERS
+ptr[ 1]: 200 from heap start					ptr[ 0]: 32 from heap start
+ptr[ 2]: (nil)							ptr[ 1]: 200 from heap start
+ptr[ 3]: 600 from heap start					ptr[ 2]: (nil)
+								ptr[ 3]: 600 from heap start
+MALLOC 5
+HEAP STATS							MALLOC 5
+Heap bytes: 1024						HEAP STATS
+AVAILABLE LIST: blocklist{length:      2  bytes:    216}	Heap bytes: 1024
+  [  0] head @    912 {state: a  size:     72}  foot @   1016	AVAILABLE LIST: blocklist{length:      2  bytes:    216}
+  [  1] head @    464 {state: a  size:     64}  foot @    560	  [  0] head @    912 {state: a  size:     72}  foot @   1016
+USED LIST: blocklist{length:      4  bytes:    808}		  [  1] head @    464 {state: a  size:     64}  foot @    560
+  [  0] head @    808 {state: u  size:     64}  foot @    904	USED LIST: blocklist{length:      4  bytes:    808}
+  [  1] head @    568 {state: u  size:    200}  foot @    800	  [  0] head @    808 {state: u  size:     64}  foot @    904
+  [  2] head @    168 {state: u  size:    256}  foot @    456	  [  1] head @    568 {state: u  size:    200}  foot @    800
+  [  3] head @      0 {state: u  size:    128}  foot @    160	  [  2] head @    168 {state: u  size:    256}  foot @    456
+								  [  3] head @      0 {state: u  size:    128}  foot @    160
+POINTERS
+ptr[ 0]: 32 from heap start					POINTERS
+ptr[ 1]: 200 from heap start					ptr[ 0]: 32 from heap start
+ptr[ 2]: (nil)							ptr[ 1]: 200 from heap start
+ptr[ 3]: 600 from heap start					ptr[ 2]: (nil)
+ptr[ 4]: 840 from heap start					ptr[ 3]: 600 from heap start
+								ptr[ 4]: 840 from heap start
+FREE 1
+HEAP STATS							FREE 1
+Heap bytes: 1024						HEAP STATS
+AVAILABLE LIST: blocklist{length:      2  bytes:    512}	Heap bytes: 1024
+  [  0] head @    168 {state: a  size:    360}  foot @    560	AVAILABLE LIST: blocklist{length:      2  bytes:    512}
+  [  1] head @    912 {state: a  size:     72}  foot @   1016	  [  0] head @    168 {state: a  size:    360}  foot @    560
+USED LIST: blocklist{length:      3  bytes:    512}		  [  1] head @    912 {state: a  size:     72}  foot @   1016
+  [  0] head @    808 {state: u  size:     64}  foot @    904	USED LIST: blocklist{length:      3  bytes:    512}
+  [  1] head @    568 {state: u  size:    200}  foot @    800	  [  0] head @    808 {state: u  size:     64}  foot @    904
+  [  2] head @      0 {state: u  size:    128}  foot @    160	  [  1] head @    568 {state: u  size:    200}  foot @    800
+								  [  2] head @      0 {state: u  size:    128}  foot @    160
+POINTERS
+ptr[ 0]: 32 from heap start					POINTERS
+ptr[ 1]: (nil)							ptr[ 0]: 32 from heap start
+ptr[ 2]: (nil)							ptr[ 1]: (nil)
+ptr[ 3]: 600 from heap start					ptr[ 2]: (nil)
+ptr[ 4]: 840 from heap start					ptr[ 3]: 600 from heap start
+								ptr[ 4]: 840 from heap start
+MALLOC 6-7
+HEAP STATS							MALLOC 6-7
+Heap bytes: 1024						HEAP STATS
+AVAILABLE LIST: blocklist{length:      2  bytes:    332}	Heap bytes: 1024
+  [  0] head @    348 {state: a  size:    180}  foot @    560	AVAILABLE LIST: blocklist{length:      2  bytes:    332}
+  [  1] head @    912 {state: a  size:     72}  foot @   1016	  [  0] head @    348 {state: a  size:    180}  foot @    560
+USED LIST: blocklist{length:      5  bytes:    692}		  [  1] head @    912 {state: a  size:     72}  foot @   1016
+  [  0] head @    258 {state: u  size:     50}  foot @    340	USED LIST: blocklist{length:      5  bytes:    692}
+  [  1] head @    168 {state: u  size:     50}  foot @    250	  [  0] head @    258 {state: u  size:     50}  foot @    340
+  [  2] head @    808 {state: u  size:     64}  foot @    904	  [  1] head @    168 {state: u  size:     50}  foot @    250
+  [  3] head @    568 {state: u  size:    200}  foot @    800	  [  2] head @    808 {state: u  size:     64}  foot @    904
+  [  4] head @      0 {state: u  size:    128}  foot @    160	  [  3] head @    568 {state: u  size:    200}  foot @    800
+								  [  4] head @      0 {state: u  size:    128}  foot @    160
+POINTERS
+ptr[ 0]: 32 from heap start					POINTERS
+ptr[ 1]: (nil)							ptr[ 0]: 32 from heap start
+ptr[ 2]: (nil)							ptr[ 1]: (nil)
+ptr[ 3]: 600 from heap start					ptr[ 2]: (nil)
+ptr[ 4]: 840 from heap start					ptr[ 3]: 600 from heap start
+ptr[ 5]: 200 from heap start					ptr[ 4]: 840 from heap start
+ptr[ 6]: 290 from heap start					ptr[ 5]: 200 from heap start
+								ptr[ 6]: 290 from heap start
+MALLOC 8
+HEAP STATS							MALLOC 8
+Heap bytes: 1024						HEAP STATS
+AVAILABLE LIST: blocklist{length:      2  bytes:    192}	Heap bytes: 1024
+  [  0] head @    488 {state: a  size:     40}  foot @    560	AVAILABLE LIST: blocklist{length:      2  bytes:    192}
+  [  1] head @    912 {state: a  size:     72}  foot @   1016	  [  0] head @    488 {state: a  size:     40}  foot @    560
+USED LIST: blocklist{length:      6  bytes:    832}		  [  1] head @    912 {state: a  size:     72}  foot @   1016
+  [  0] head @    348 {state: u  size:    100}  foot @    480	USED LIST: blocklist{length:      6  bytes:    832}
+  [  1] head @    258 {state: u  size:     50}  foot @    340	  [  0] head @    348 {state: u  size:    100}  foot @    480
+  [  2] head @    168 {state: u  size:     50}  foot @    250	  [  1] head @    258 {state: u  size:     50}  foot @    340
+  [  3] head @    808 {state: u  size:     64}  foot @    904	  [  2] head @    168 {state: u  size:     50}  foot @    250
+  [  4] head @    568 {state: u  size:    200}  foot @    800	  [  3] head @    808 {state: u  size:     64}  foot @    904
+  [  5] head @      0 {state: u  size:    128}  foot @    160	  [  4] head @    568 {state: u  size:    200}  foot @    800
+								  [  5] head @      0 {state: u  size:    128}  foot @    160
+POINTERS
+ptr[ 0]: 32 from heap start					POINTERS
+ptr[ 1]: (nil)							ptr[ 0]: 32 from heap start
+ptr[ 2]: (nil)							ptr[ 1]: (nil)
+ptr[ 3]: 600 from heap start					ptr[ 2]: (nil)
+ptr[ 4]: 840 from heap start					ptr[ 3]: 600 from heap start
+ptr[ 5]: 200 from heap start					ptr[ 4]: 840 from heap start
+ptr[ 6]: 290 from heap start					ptr[ 5]: 200 from heap start
+ptr[ 7]: 380 from heap start					ptr[ 6]: 290 from heap start
+								ptr[ 7]: 380 from heap start
+FREE 5,0,6
+HEAP STATS							FREE 5,0,6
+Heap bytes: 1024						HEAP STATS
+AVAILABLE LIST: blocklist{length:      3  bytes:    540}	Heap bytes: 1024
+  [  0] head @      0 {state: a  size:    308}  foot @    340	AVAILABLE LIST: blocklist{length:      3  bytes:    540}
+  [  1] head @    488 {state: a  size:     40}  foot @    560	  [  0] head @      0 {state: a  size:    308}  foot @    340
+  [  2] head @    912 {state: a  size:     72}  foot @   1016	  [  1] head @    488 {state: a  size:     40}  foot @    560
+USED LIST: blocklist{length:      3  bytes:    484}		  [  2] head @    912 {state: a  size:     72}  foot @   1016
+  [  0] head @    348 {state: u  size:    100}  foot @    480	USED LIST: blocklist{length:      3  bytes:    484}
+  [  1] head @    808 {state: u  size:     64}  foot @    904	  [  0] head @    348 {state: u  size:    100}  foot @    480
+  [  2] head @    568 {state: u  size:    200}  foot @    800	  [  1] head @    808 {state: u  size:     64}  foot @    904
+								  [  2] head @    568 {state: u  size:    200}  foot @    800
+POINTERS
+ptr[ 0]: (nil)							POINTERS
+ptr[ 1]: (nil)							ptr[ 0]: (nil)
+ptr[ 2]: (nil)							ptr[ 1]: (nil)
+ptr[ 3]: 600 from heap start					ptr[ 2]: (nil)
+ptr[ 4]: 840 from heap start					ptr[ 3]: 600 from heap start
+ptr[ 5]: (nil)							ptr[ 4]: 840 from heap start
+ptr[ 6]: (nil)							ptr[ 5]: (nil)
+ptr[ 7]: 380 from heap start					ptr[ 6]: (nil)
+								ptr[ 7]: 380 from heap start
+MALLOC 9,10,11
+HEAP STATS							MALLOC 9,10,11
+Heap bytes: 1024						HEAP STATS
+AVAILABLE LIST: blocklist{length:      3  bytes:    172}	Heap bytes: 1024
+  [  0] head @    984 {state: a  size:      0}  foot @   1016	AVAILABLE LIST: blocklist{length:      3  bytes:    172}
+  [  1] head @    296 {state: a  size:     12}  foot @    340	  [  0] head @    984 {state: a  size:      0}  foot @   1016
+  [  2] head @    488 {state: a  size:     40}  foot @    560	  [  1] head @    296 {state: a  size:     12}  foot @    340
+USED LIST: blocklist{length:      6  bytes:    852}		  [  2] head @    488 {state: a  size:     40}  foot @    560
+  [  0] head @    912 {state: u  size:     32}  foot @    976	USED LIST: blocklist{length:      6  bytes:    852}
+  [  1] head @    240 {state: u  size:     16}  foot @    288	  [  0] head @    912 {state: u  size:     32}  foot @    976
+  [  2] head @      0 {state: u  size:    200}  foot @    232	  [  1] head @    240 {state: u  size:     16}  foot @    288
+  [  3] head @    348 {state: u  size:    100}  foot @    480	  [  2] head @      0 {state: u  size:    200}  foot @    232
+  [  4] head @    808 {state: u  size:     64}  foot @    904	  [  3] head @    348 {state: u  size:    100}  foot @    480
+  [  5] head @    568 {state: u  size:    200}  foot @    800	  [  4] head @    808 {state: u  size:     64}  foot @    904
+								  [  5] head @    568 {state: u  size:    200}  foot @    800
+POINTERS
+ptr[ 0]: (nil)							POINTERS
+ptr[ 1]: (nil)							ptr[ 0]: (nil)
+ptr[ 2]: (nil)							ptr[ 1]: (nil)
+ptr[ 3]: 600 from heap start					ptr[ 2]: (nil)
+ptr[ 4]: 840 from heap start					ptr[ 3]: 600 from heap start
+ptr[ 5]: (nil)							ptr[ 4]: 840 from heap start
+ptr[ 6]: (nil)							ptr[ 5]: (nil)
+ptr[ 7]: 380 from heap start					ptr[ 6]: (nil)
+ptr[ 8]: 32 from heap start					ptr[ 7]: 380 from heap start
+ptr[ 9]: (nil)							ptr[ 8]: 32 from heap start
+ptr[10]: 272 from heap start					ptr[ 9]: (nil)
+ptr[11]: 944 from heap start					ptr[10]: 272 from heap start
+							      )	ptr[11]: 944 from heap start

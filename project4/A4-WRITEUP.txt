@@ -1,0 +1,204 @@
+                              ____________
+
+                               A4 WRITEUP
+                              ____________
+
+
+- Name: Hobbs131
+- NetID: hobbs131@umn.edu
+
+Answer the questions below according to the assignment
+specification. Write your answers directly in this text file and submit
+it along with your code.
+
+
+PROBLEM 1: optimized_matrix_trans_mult_vec()
+============================================
+
+  Do your timing study on apollo.cselabs.umn.edu
+
+
+(A) Paste Source Code
+~~~~~~~~~~~~~~~~~~~~~
+
+  Paste a copy of your source code for the function
+  optimized_matrix_trans_mult_vec() below.
+
+  int optimized_matrix_trans_mult_vec(matrix_t mat, vector_t vec, vector_t res){
+    // local variables to avoid main memory access
+    vector_t temp_vec = vec;
+    vector_t temp_res = res;
+    matrix_t temp_mat = mat;
+
+    // Set values of temp_res.data to 0 in order to avoid uninitialized value in valgrind
+    for (int a = 0; a < temp_res.len; a++){
+      temp_res.data[a] = 0;
+    }
+    // error conditionals
+    if(temp_mat.rows!= temp_vec.len){
+      printf("mat.rows (%ld) != vec.len (%ld)\n",temp_mat.rows,temp_vec.len);
+      return 1;
+    }
+    if(temp_mat.cols != temp_res.len){
+      printf("mat.cols (%ld) != res.len (%ld)\n", temp_mat.cols,temp_res.len);
+      return 2;
+    }
+
+    // Row-major order loops
+    for(int i=0; i<temp_mat.rows; i++){
+      int j;
+      // loop unrolled x4
+      for(int j = 0; j<temp_mat.cols; j+=4){
+        // one liners for result calculations. Formulas taken from matvec.h
+        temp_res.data[j] = (temp_mat.data[(i*temp_mat.cols + j)] * temp_vec.data[i] + temp_res.data[j]);
+        temp_res.data[j + 1] = (temp_mat.data[(i*temp_mat.cols + j + 1)] * temp_vec.data[i] + temp_res.data[j + 1]);
+        temp_res.data[j + 2] = (temp_mat.data[(i*temp_mat.cols + j+ 2)] * temp_vec.data[i] + temp_res.data[j + 2]);
+        temp_res.data[j + 3] = (temp_mat.data[(i*temp_mat.cols + j + 3)] * temp_vec.data[i] + temp_res.data[j  + 3]);
+      }
+      // clean-up loop
+      for(; j < temp_mat.cols; j++){
+        temp_res.data[j] =  (temp_mat.data[(i*temp_mat.cols + j)] * temp_vec.data[i] + temp_res.data[j]);
+      }
+    }
+    res = temp_res;
+
+    return 0;
+  }
+
+
+(B) Timing on Apollo
+~~~~~~~~~~~~~~~~~~~~
+
+  Paste a copy of the results of running `mult_bench' on
+  apollo.cselabs.umn.edu in the space below which shows how your
+  performance optimizations improved on the baseline codes.
+
+  hobbs131@csel-apollo:/home/hobbs131/CSCI2021/a4 $ ./mult_benchmark
+  SIZE       BASE       NORM        OPT BSPDUP NSPDUP POINTS
+   512 1.1990e-03 1.0480e-03 5.7700e-04   2.08   1.82      1
+  1024 2.2721e-02 4.2630e-03 2.3420e-03   9.70   1.82      5
+  2048 2.6139e-01 1.7282e-02 1.0223e-02  25.57   1.69     12
+  4096 1.1116e+00 6.8698e-02 3.9643e-02  28.04   1.73     14
+  8192 4.5196e+00 2.7461e-01 1.6956e-01  26.65   1.62     13
+RAW POINTS: 45
+TOTAL POINTS: 35 / 35
+
+
+
+(C) Optimizations
+~~~~~~~~~~~~~~~~~
+
+  Describe in some detail the optimizations you used to speed the code
+  up.  THE CODE SHOULD CONTAIN SOME COMMENTS already to describe these
+  but in the section below, describe in English the techniques you used
+  to make the code run faster.  Format your descriptions into discrete
+  chunks such as.
+        Optimization 1: Eliminated the use of passed in variables and used local variables instead.
+        This will improve performance because main memory is not accessed as frequently, which slows performance
+
+        Optimization 2: Rewrote the function to move across rows instead of columns.
+        This will improve performance because row elements are contiguous in memory whereas column elements are not.
+
+        Optimization 3: Unrolled the loop by x4. This will improve performance due to less instructions executed, pipelined
+        processors can execute more independent instructions, superscalar processors can utilize more independent function units simultaneously,
+        and fewer branch predictions which means the stream of instructions is more reliable.
+        // Optimization 3 answer influenced by benefits of loop unrolling shown in quiz 11 q7.
+
+        Optimization 4: Made the calculation instructions one-liners which resulted in fewer instructions which will improve performance.
+
+  Full credit solutions will have a least two optimizations.
+
+
+PROBLEM 2: Timing Search Algorithms
+===================================
+
+  Do your timing study on apollo.cselabs.umn.edu
+
+
+(A) Min Size for Algorithmic Differences
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Determine the size of input array does one start to see a measurable
+  difference in the performance of the linear and logarithmic
+  algorithms.  Produce a timing table which includes all algorithms
+  which clearly demonstrates an uptick in the times associated with some
+  while others remain much lower.  Identify what size this appears to be
+  a occur.
+
+  LENGTH SEARCHES   binary      linear         list         tree
+      16     64  4.0000e-06  3.0000e-06    3.0000e-06    2.0000e-06
+      32    128  6.0000e-06  6.0000e-06    5.0000e-06    5.0000e-06
+      64    256  1.1000e-05  1.4000e-05    1.6000e-05    1.0000e-05
+     128    512  2.2000e-05  3.7000e-05    5.7000e-05    1.9000e-05
+     256   1024  4.4000e-05  1.2900e-04    2.1400e-04    3.6000e-05
+     512   2048  9.0000e-05  4.8400e-04    8.3900e-04    7.6000e-05
+    1024   4096  2.6900e-04  1.8950e-03    3.5850e-03    1.5300e-04
+    2048   8192  4.0600e-04  7.4000e-03    5.0067e-02    3.1400e-04
+    4096  16384  8.7900e-04  2.9077e-02    2.1194e-01    6.7700e-04
+    8192  32768  1.8450e-03  1.1583e-01    9.6256e-01    1.4570e-03
+   16384  65536  3.9420e-03  4.6338e-01    4.2161e+00    3.1240e-03
+
+
+   As shown, a noticeable difference seems to be around input length of 256-512. After this point, logarithmic algorithms (tree/binary) are much faster than linear algorithms
+
+
+(B) Linear Search in List vs Array
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Determine whether the linear array and linked list search remain
+  approximately at the same performance level as size increases to large
+  data or whether one begins to become favorable over other. Determine
+  the approximate size at which this divergence becomes obvious. Discuss
+  reasons WHY this difference arises.
+
+  linear arrays and linked lists perform about the same as size increases but linear arrays are slightly faster. The divergence can be seen around size 1024-2048.
+  This difference may arise due to the different storage methods. Arrays have better cache locality because of their contiguous elements,
+  this is not the case with linked lists which have a pointer and data.
+  This combined with less overall instructions could lead to difference in performance.
+
+(C) Binary Search in Tree vs Array
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Compare the binary array search and binary tree search on small to
+  very large arrays. Determine if there is a size at which the
+  performance of these two begins to diverge. If so, describe why this
+  might be happening based on your understanding of the data structures
+  and the memory system. If not, describe why you believe there is
+  little performance difference between the two
+
+  As shown by the data, there is little performance difference between the two algorithms. T
+  his is likely due to similar methods of search. Both algorithms are logarithmic and therefore half the search size every time.
+  This leads to similar performance. Slight performance differences may be due to the slightly different
+  storage (arrays are contiguous in memory, trees have nodes/data).
+
+(D) Caching Effects on Algorithms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  It is commonly believed that memory systems that feature a Cache will
+  lead to arrays performing faster than linked structures such as Linked
+  Lists and Binary Search Trees. Describe whether your timings confirm
+  or refute this belief.  Address both types of algorithms in your
+  answer:
+
+
+  My timings seem to refute this statement except for at very small inputs.
+
+  - What effects does Cache have on Linear Search in arrays and lists
+    and why?
+    - Linear search is benefited by cache at smaller values in arrays, especially due to their contiguous elements,
+      and lists because the elements are not too far apart in memory. This benefit is outweighed as size grows due
+      to the sheer amount of instructions that have to be executed in linear search due to its O(n).
+
+  - What effects does Cache have on Binary Search in arrays and lists
+    and why?
+   - Binary search isn't exactly benefited by cache because the algorithm doesn't access elements in a contiguous memory fashion
+     like linear search does. This detriment is alleviated at larger sizes due to the halving, or logarithmic nature
+     of the algorithm. Overall, binary search is much better at larger values due to the far less amount of instructions it has to execute.
+     This advantage far outweighs cache detriments at large values.
+
+(E) OPTIONAL MAKEUP CREDIT
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  If you decided to make use of a table of function pointers/structs
+  which is worth makeup credit, describe your basic design for this
+  below.
