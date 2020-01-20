@@ -1,0 +1,294 @@
+                           __________________
+
+                            LAB 07 QUESTIONS
+                           __________________
+
+
+- Name: Tanner Hobbs
+- NetID: Hobbs131
+
+Answer the questions below according to the lab specification. Write
+your answers directly in this text file and submit it to complete the
+lab.
+
+
+PROBLEM 1: Division and Assembly Errors
+=======================================
+
+A: Incorrect Types
+~~~~~~~~~~~~~~~~~~
+
+  Examine the following codes.
+  - `dodiv_main.c' contains a main function which calls the `dodiv()'
+    function
+  - `dodiv_badtypes.s' contains the function written in assembly but has
+    an error which leads to incorrect results.
+
+  Compile and run the codes and report your results with
+  ,----
+  | > gcc -g dodiv_main.c dodiv_badtype.s
+  `----
+  Identify which assembly instructions are incorrect and why.
+    
+   movq %rax,(%r8) and movq %rdx,(%rcx)        
+   move too many bytes to int locations. switch to movl %eax and movl %edx
+
+B: Correct Version
+~~~~~~~~~~~~~~~~~~
+
+  After identify the error in `dodiv_badtypes.s', correct the errors and
+  paste your whole code below. Make sure to compile and test the code.
+
+  	.text
+	.global	dodiv
+dodiv:
+	cmpl $0,%edi            # compare arg1 to 0
+        je .ERROR_ZERO
+
+        movl %edi,%eax          # copy arg1 to eax for division
+        movq %rdx,%r8           # copy arg3 to r8 as rdx is used in division
+        cqto                    # set up division by copy to edx
+        idivl %esi              # divide by arg2, eax has quot, edx has rem
+        movl %eax,(%r8)         # write quot to arg3
+        movl %edx,(%rcx)        # write rem  to arg4
+        movl $0,%eax            # return 0 on success
+	ret
+
+.ERROR_ZERO:
+        movl $1,%eax            # return 1 on failure
+        ret
+
+
+C: Segmentation Fault
+~~~~~~~~~~~~~~~~~~~~~
+
+  Examine the codes below.
+  - `dodiv_main.c' contains a main function which calls the `dodiv()'
+    function
+  - `dodiv_segfault.s' contains the function written in assembly but has
+    a bad memory error in it.
+
+  Compile the code and run it. Make sure to include debug information
+  and run under Valgrind.
+  ,----
+  | > gcc -g dodiv_main.c dodiv_segfault.s
+  | > valgrind ./a.out
+  `----
+  After running it, report your output. Look very carefully at the out
+  of bounds address which is identified by valgrind as an 'Invalid
+  Write'.  Determine why the strange and SMALL memory address shows up
+  in and why it is problematic.  What differences are present in this
+  version over your corrected version that explain the trouble?
+
+   Segmentation fault (core dumped)
+   > valgrind ./a.out
+   ==18731== Memcheck, a memory error detector
+   ==18731== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+   ==18731== Using Valgrind-3.14.0 and LibVEX; rerun with -h for copyright info
+   ==18731== Command: ./a.out
+   ==18731== 
+   ==18731== Invalid write of size 4
+   ==18731==    at 0x1091CE: ??? (dodiv_segfault.s:18)
+   ==18731==    by 0x489BCE2: (below main) (in /usr/lib/libc-2.29.so)
+   ==18731==  Address 0x9 is not stack'd, malloc'd or (recently) free'd
+   ==18731== 
+   ==18731== 
+   ==18731== Process terminating with default action of signal 11 (SIGSEGV): dumping core
+   ==18731==  Access not within mapped region at address 0x9
+   ==18731==    at 0x1091CE: ??? (dodiv_segfault.s:18)
+   ==18731==    by 0x489BCE2: (below main) (in /usr/lib/libc-2.29.so)
+   ==18731==  If you believe this happened as a result of a stack
+   ==18731==  overflow in your program's main thread (unlikely but
+   ==18731==  possible), you can try to increase the size of the
+   ==18731==  main thread stack using the --main-stacksize= flag.
+   ==18731==  The main thread stack size used in this run was 10022912.
+   ==18731== 
+   ==18731== HEAP SUMMARY:
+   ==18731==     in use at exit: 0 bytes in 0 blocks
+   ==18731==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+   ==18731== 
+   ==18731== All heap blocks were freed -- no leaks are possible
+   ==18731== 
+   ==18731== For counts of detected and suppressed errors, rerun with: -v
+   ==18731== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+   Segmentation fault (core dumped)
+   
+   %rdx contains the address for the quotient but it is overwritten and therefore leads to an
+   out of bound write at line 18.
+
+   movq %rx,%r8 should be added and movl %eax,(%rdx) should be changed to movl %eax, (%r8)
+
+
+D: Calling from Assembly
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The C code in `dodiv_main.c' provides a main function that can also be
+  written in assembly though setting up calls to `printf()' are a bit
+  tedious.  Analyze the assembly version provided in `dodiv_main_asm.s'
+  and answer the following questions. Focus on filling in the following
+  C-Assembly correspondence table.
+
+  ---------------------------------------------------------------------
+   Location in                                            Assembly     
+   main()            C Code                               Instructions 
+  ---------------------------------------------------------------------
+   Call to dodiv()   int numer = 42;                      movl $42 %edi               
+                     int denom = 11;                      movl $11 %esi             
+                     &quot                                movq %rsp, %rdx             
+                     &rem                                 leaq 4(%rsp), %rcx             
+  ---------------------------------------------------------------------
+   Call to printf()  printf("%d / %d = %d rem %d\n",...)  leaq	.FMT_STRING(%rip)%rdi           
+   arguments         printf(..., quot)                    movl	(%rsp), %ecx
+                     printf(..., rem)                     movl 4(%rsp), %r8d             
+  ---------------------------------------------------------------------
+
+  Also describe what the following two bits of assembly do:
+  - Beginning of main(): `subq $8, %rsp' - allocates 8 bytes of memory on the stack for rem and quotient and aligns stack so it is ready for call to dodiv
+  - End of main(): `addq $8, %rsp'
+	- shrinks stack and stack pointer to point at return address
+
+
+PROBLEM 2: Binary Analysis
+==========================
+
+  The two files verify_main.c and verify.o can be compiled together to
+  form an executable as in the following.
+  ,----
+  | > gcc verify.o verify_main.c
+  | > ./a.out
+  | Complete this sentence by C creator Dennis Ritchie:
+  | C has the power of assembly language and the convenience of ...
+  | pizza?
+  | Have a nice tall glass of ... NOPE.
+  | > 
+  `----
+
+  The intent of the executable is to enter the correct string to
+  complete a sentence.  Unfortunately the source code for the verify()
+  function in verify.o has been lost.  This problem analyzes how one
+  might determine the correct answer without source code.
+
+
+A: strings utility for binaries
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Make use of the `strings' program which is available on most Unix
+  platforms. This program shows the ASCII strings present in a binary
+  object such as verify.o. Run it by typing:
+  ,----
+  | > strings verify.o
+  `----
+  Show the results you of the run for you answer and speculate about
+  what strings seem probable as completions to the sentence in
+  verify_main.
+
+a set of dental instruments
+C++ without the ++ part
+assembly language
+Dvorak keyboards
+trick question: it isn't convenient
+a gun that shoots forwards and backwards
+OCaml without type inference, garbage collection, or first-class functions
+GCC: (GNU) 7.2.1 20171128
+verify.c
+verify
+answers
+_GLOBAL_OFFSET_TABLE_
+strcmp
+.symtab
+.strtab
+.shstrtab
+.rela.text
+.data
+.bss
+.rodata.str1.1
+.rodata.str1.8
+.rela.data.rel.local
+.comment
+.note.GNU-stack
+.rela.eh_frame
+
+The answer is most likely one of the first few strings.
+
+
+
+B: nm utility to show symbol names
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Run the `nm' utility which is short for "names". It produces the set
+  of symbols present in a binary file.
+  ,----
+  | > nm verify.o
+  `----
+  Such symbols are identified by 1-letter codes such as
+  - T/t : program instructions (text) in the object
+  - D/d : data defined in the objects
+  - U : undefined symbols in the object which must come from other
+    objects
+
+  Show the output of you run of `nm' and speculate on what variable
+  might contain the completion to the sentences.
+
+0000000000000000 D answers
+                 U _GLOBAL_OFFSET_TABLE_
+                 U strcmp
+0000000000000000 T verify
+
+The variable answers seems most likely.
+
+
+
+C: GDB with Assembly
+~~~~~~~~~~~~~~~~~~~~
+
+  The binary utilities mentioned can give some insight and perhaps
+  enable problems like this to be "brute forced": once all possible
+  answers are known, try all of them until something works.
+
+  However, `gdb' can provide a faster route as it handles assembly code
+  as easily as C code.  Take the following approach.
+
+  1. Run gdb on the executable resulting from compiling verify_main.c
+     and verify.o
+  2. In TUI mode, use the command
+     ,----
+     | (gdb) layout asm
+     `----
+     to show assembly code for the program being debugged. This is
+     necessary when dealing with binary files like verify.o.  If you
+     neglected to run `gdb' in TUI mode, you can enable it with
+     ,----
+     | (gdb) tui enable
+     `----
+  3. Set a breakpoint on the function that verifies the input.
+  4. Run the program to the breakpoint. You will need to enter a guess
+     for the sentence completion but anything will work to move the
+     program forward.
+  5. Once the verifying function is entered, look for a string
+     comparison to be done, likely using the `strcmp()' function.  Step
+     forwards to just before this function. Use the `stepi' instruction
+     to step forward by single assembly instructions.
+  6. Immediately preceding this call will be some movement of pointers
+     into registers which are the arguments to the function. You should
+     inspect the strings pointed to by these registers.
+  7. You can print the values of registers as various things in `gdb'
+     using the `print' command and C-style casting. Examples are below.
+     Note register names are preceded with a dollar sign ($).
+     ,----
+     |    (gdb) print (int) $rax
+     |    $1 = -8448
+     |    (gdb) print (char *) $rax
+     |    $2 = 0x7fffffffdf00 "cruft\n"
+     |    (gdb) print (double) $rax
+     |    $3 = 140737488346880
+     |    (gdb) print (int *) $rax
+     |    $4 = (int *) 0x7fffffffdf00
+     `----
+  8. Look particularly at "argument" registers which are used to pass
+     information to functions like `strcmp()'.  Some of these should
+     contain pointers to the string entered and the correct string.
+
+  Give the correct string to enter to complete the sentence.
+
+
+  The correct string is "assembly language"

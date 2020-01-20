@@ -1,0 +1,11 @@
+insert hi
+insert hello
+insert job
+get 1
+get 2
+contains job
+contains ace
+contains hi
+insert jim
+insert joe
+print

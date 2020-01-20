@@ -1,0 +1,175 @@
+                           __________________
+
+                            LAB 08 QUESTIONS
+                           __________________
+
+
+- Name: Tanner Hobbs
+- NetID: Hobbs131
+Answer the questions below according to the lab specification. Write
+your answers directly in this text file and submit it to complete the
+lab.
+
+
+PROBLEM 1: Smashing
+===================
+
+  Examine the obviously flawed code in `smash.c'.
+  ,----
+  |  1  #include <stdio.h>
+  |  2  
+  |  3  void fill_seq(int *a);
+  |  4  
+  |  5  int main(){
+  |  6    int arr[4];
+  |  7  
+  |  8    fill_seq(arr);
+  |  9  
+  | 10    for(int i=0; i<4; i++){
+  | 11      printf("[%d]: %d\n",i,arr[i]);
+  | 12    }
+  | 13  
+  | 14    return 0;
+  | 15  }
+  | 16  
+  | 17  #define END 8
+  | 18  void fill_seq(int *a){
+  | 19    for(int i=0; i<END; i++){
+  | 20      a[i] = (i+1)*2;
+  | 21    }
+  | 22  }
+  `----
+  Compiling and running this code with gcc on a Linux system (and
+  perhaps in other compiler/OS configurations) will yield the following
+  kind of behavior.
+  ,----
+  | > gcc smash.c
+  | > ./a.out
+  | [0]: 2
+  | [1]: 4
+  | [2]: 6
+  | [3]: 8
+  | --- stack smashing detected ---: <unknown> terminated
+  | Aborted (core dumped)
+  `----
+  Describe the kind of error that is occurring in this code and why it
+  is referred to as "stack smashing." Identify which part of the code is
+  causing the problem.
+
+
+  The problem is in fill_seq. This function goes past the amount of space allocated in main. Thus overwriting values and producing the error "stack smashing".
+
+
+PROBLEM 2: Movement Mistakes
+============================
+
+  Analyze the files `posneg_main.c' and `posneg.s'.  The C code uses a
+  function in assembly and the assembly function has a common bug in it.
+
+
+A
+~
+
+  Compile the files together and run the resulting program. Explain why
+  the output appears strange.
+
+  It's strange because five is positive. Not negative.
+
+
+B
+~
+
+  Analyze the code in `posneg.s' carefully and compare the `movX / cmpX'
+  instructions used in the first few lines against the types of
+  variables in the `posneg_main.c' code.  You may want to step into this
+  function in GDB to look at the register values after the `movX'
+  instruction. Find a bug in this sequence and describe why it causes
+  the loaded value to appear negative.
+
+  Movq moves 64 bits. The ints are 32 ints. Should be %esi as well for 32 bit pointers.
+
+
+C
+~
+
+  Fix the bug in `posneg.s' and paste your corrected code below.
+
+
+  posneg:
+         movl    (%rdi),%esi
+         cmpl    $0,%esi
+         jl      .NEG
+         movl    $0,%eax
+         ret
+   .NEG:
+         movl    $1,%eax
+         ret
+
+
+PROBLEM 3: Convert C to Assembly
+================================
+
+  Convert the C function in the file `col_check.c' to x86-64
+  assembly. Note that the parameter is a packed struct, not a pointer to
+  a struct.
+
+  ,----
+  | typedef struct{
+  |   int cur;            // current value in collatz sequence
+  |   int step;           // step number in collatz sequence
+  | } colinfo_t;
+  | // |       | Byte |   Byte | Packed |
+  | // | Field | Size | Offset |   Bits |
+  | // |-------+------+--------+--------|
+  | // | cur   |    4 |     +0 |   0-31 |
+  | // | step  |    4 |     +4 |  32-64 |
+  | 
+  | int col_check(colinfo_t info){
+  |   // Analyzes values in the packed struct arg
+  |   // info to detect errors in it. An int
+  |   // comprised of set error bits is
+  |   // returned. Bit 0: cur field was 0 or
+  |   // below, Bit 1: step was negative, Bit 2:
+  |   // cur was 1 but step is negative.
+  | 
+  |   int cur = info.cur;
+  |   int step = info.step;
+  |   int errs = 0;
+  |   if(cur <= 0){
+  |     errs = errs | 0x1; // 0b0001
+  |   }
+  |   if(step < 0){
+  |     errs = errs | 0x2; // 0b0010
+  |   }
+  |   if(cur==1 && step < 0){
+  |     errs = errs | 0x4; // 0b0100
+  |   }
+  |   
+  |   return errs;
+  | }
+
+
+
+
+
+   .globl	col_check
+   col_check:
+   	movq	%rdi, %rdx     
+   	sarq	$32, %rdx       
+   	movl	$0, %eax        
+   	cmpl	$0, %edi        
+   	jg	.CURPOS
+  	orl     $0x1,%eax       
+   .CURPOS:
+   	cmpl	$0, %edx        
+           jge     .STEPNONEG
+           orl     $0x2,%eax       
+   .STEPNONEG:
+   	cmpl	$1, %edi        
+   	jnz     .RETURN
+           cmpl    $0, %edx        
+   	jge     .RETURN
+   	orl     $0x4,%eax       
+   .RETURN:
+           ret
+ 

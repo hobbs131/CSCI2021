@@ -1,0 +1,286 @@
+                           __________________
+
+                            LAB 09 QUESTIONS
+                           __________________
+
+
+- Name Tanner Hobbs
+- NetID: hobbs131
+
+Answer the questions below according to the lab specification. Write
+your answers directly in this text file and submit it to complete the
+lab.
+
+
+Important: Don't Run on Vole
+============================
+
+  Vole is a virtualized environment which means measuring the runtime of
+  codes will be very unpredictable on it.
+
+  Favor a "real" machine like a physical lab machine, laptop, or a
+  remote login to apollo.cselabs.umn.edu.  To run the codes remotely,
+  log in via the ssh tool as in
+
+  ,----
+  | > ssh kauf0095@apollo.cselabs.umn.edu
+  `----
+
+  Use your X.500 username/password to get access. All CSE labs machines
+  share the same home directory so any code you download to Vole or a
+  physical lab machine will be available on all machines.
+
+
+Compiling and Timing
+====================
+
+  IMPORTANT: Use the provided Makefile to compile as in
+  ,----
+  | > make
+  | gcc -Wall -g -Og -c superscalar_main.c
+  | gcc -Wall -g -Og -c superscalar_funcs.c
+  | gcc -Wall -g -Og -o superscalar_main superscalar_main.o superscalar_funcs.o
+  `----
+  The compilation uses `-Og' (debug level optimization) which is
+  necessary to stop the compiler from modifying some loops.
+
+  This will produce the `superscalar_main' program which has the
+  following usage:
+  ,----
+  | > ./superscalar_main
+  | usage: ./superscalar_main <ALG> <MULT> <EXP>
+  |   <MULT> and <ALG> are integers, iterates for MULT * 2^{EXP} iterations
+  |   <ALG> is one of
+  |           add1_sep : add 1 times in loop
+  |           add2_sep : add 2 times in same loop; separate destinations
+  |           add3_sep : add 3 times in same loop; separate destinations
+  |          add2_same : add 2 times in same loop; same destinations
+  |           mul1_sep : multiply 1 times in loop
+  |           mul2_sep : multiply 2 times in same loop; separate destinations
+  |           mul3_sep : multiply 3 times in same loop; separate destinations
+  |          mul2_same : multiply 2 times in same loop; same destinations
+  |    add_and_mul_sep : add and multiply in the same loop; separate destinations
+  |   add_and_mul_same : add and multiply in the same loop; same destination
+  |   add_then_mul_sep : add and multiply in different loops; separate destinations
+  |  add_then_mul_same : add and multiply in different loops; same destinations
+  `----
+
+  Experiment with algorithm `add1_sep' and parameters `MULT' and `EXP'
+  which control the number of iterations run. Experiment until you get a
+  run time of about 1 second such as MULT=1 and EXP=30 on apollo.
+  ,----
+  | apollo> time ./superscalar_main add1_sep 1 30
+  | add1_sep for 18 * 2^{27} = 2415919104 iterations... complete
+  |
+  | real	0m1.071s
+  | user	0m1.040s
+  | sys	0m0.008s
+  `----
+
+
+PROBLEM 1: Addition
+===================
+
+(A) add1_sep / add2_sep / add3_sep
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Examine the source code in `superscalar_funcs.c' for the following
+  algorithms.
+  - add1_sep : add 1 times in loop
+  - add2_sep : add 2 times in same loop; separate destinations
+  - add3_sep : add 3 times in same loop; separate destinations
+  Note that each does some additions in a loop. Time each of these WITH
+  THE SAME MULT/EXP parameters and show your timings. Describe how the
+  timings compare and speculate on why.
+
+  Note that all of these involve incrementing a counter (`i++') so the
+  number of additions is one greater than the algorithm name suggests.
+
+
+(B) add2_sep / add2_same
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Compare the source code of the two algorithms below.
+  - add1_sep : add 1 times in loop
+  - add2_sep : add 2 times in same loop; separate destinations
+  - add2_same : add 2 times in same loop; same destinations
+  Note that the only difference between the add2_X algorithms is that
+  the destination for the results.
+
+  Compare timings for these and speculate on the reasons for any
+  unexpected results.
+
+
+PROBLEM 2: Multiplication
+=========================
+
+(A) add1_sep / mul1_sep
+~~~~~~~~~~~~~~~~~~~~~~~
+
+  Compare the following two algorithms.
+  - add1_sep : add 1 times in loop
+  - mul1_sep : multiply 1 times in loop
+  Time them on the same parameters and speculate on the timing
+  differences.
+
+
+(B) mul1_sep / mul2_sep / mul3_sep
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Compare the following two algorithms.
+  - mul1_sep : multiply 1 times in loop
+  - mul2_sep : multiply 2 times in same loop; separate destinations
+  - mul3_sep : multiply 3 times in same loop; separate destinations
+  Time them on the same parameters and speculate on the timing
+  differences.
+
+
+(C) mul1_sep / mul2_sep / mul2_same
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Compare the following two algorithms.
+  - mul1_sep : multiply 1 times in loop
+  - mul2_sep : multiply 2 times in same loop; separate destinations
+  - mul2_same : multiply 2 times in same loop; same destinations
+  Time them on the same parameters and speculate on the timing
+  differences.
+
+
+PROBLEM 3: Combined Addition/Multiplication
+===========================================
+
+(A) add1_then_mul_sep / add2_and_mul_sep
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Compare the following two algorithms.
+  - add1_then_mul_sep : add and multiply in different loops; separate
+    destinations
+  - add2_and_mul_sep : add twice and multiply in the same loop; separate
+    destinations
+  Note that each loop involves incrementing a counter so both of the
+  above algorithms should do the same number of operations for N
+  iterations:
+  ---------------------------------------------
+                      loop        total  total
+   Algorithm          incr  adds  adds   mults
+  ---------------------------------------------
+   add1_then_mul_sep  2*N   1*N   3*N    N
+   add2_and_mul_sep   1*N   2*N   3*N    N
+  ---------------------------------------------
+
+  Time these algorithms on the same parameters and speculate on the
+  timing differences.
+
+  Compare the timings to your earlier results for add1_sep and mul1_sep.
+
+
+(B) add2_and_mul_sep / add2_and_mul_same
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Compare the following two algorithms.
+  - add_and_mul_sep : add and multiply in the same loop; separate
+    destinations
+  - add_and_mul_same : add and multiply in the same loop; same
+    destination
+  Time them on the same parameters and speculate on the timing
+  differences.
+
+
+(C)
+~~~
+
+  Part A time the following algorithms which modified SEPARATE memory
+  locations:
+  - add1_then_mul_sep : add and multiply in different loops; separate
+    destinations
+  - add2_and_mul_sep : add twice and multiply in the same loop; separate
+    destinations
+
+  Time the following two algorithms which modify the SAME memory
+  location.
+  - add1_then_mul_same : add and multiply in different loops; same
+    destinations
+  - add2_and_mul_same : add twice and multiply in the same loop; same
+    destination
+  As before the operation count is the same but in this case the
+  destination for adds/multiplies is the same.
+
+  Explain time similarities or differences between these SAME algorithms
+  and their SEPARATE equivalents from part A.
+
+
+PROBLEM 4: Quote Binary Debugging
+=================================
+
+  This problem continues to review debugging techniques for situations
+  in which no source code is present. It is relevant to defusing the
+  binary bomb.
+
+  The two files `quote_main.c' and `quote_data.o' can be compiled
+  together to form an executable as in the following.
+  ,----
+  | > gcc quote_main.c quote_data.o
+  |
+  | > a.out
+  | Complete this sentence by C++ creator Bjarne Stroustrup:
+  | C makes it easy to shoot yourself in the foot; ...
+  |
+  | enter a number from 0 to 15: 2
+  |
+  | 2: Java prevents you from shooting yourself in the foot by cutting off all your fingers.
+  |
+  | Have a nice tall glass of ... NOPE.
+  `----
+  As in a previous exercise, the intention is to use the debugger to
+  detect the correct response. In this case however, the correct
+  completion is present in `quote_main.c'. However, one must enter a
+  number which selects from several responses in an attempt to match the
+  correct completion. It is possible to "brute force" the solution by
+  trying all solutions. However, the intent of the activity is to
+  explore the running code with the debugger to answer the questions
+  below. This will give insight into some stages of the binary bomb
+  assignment.
+
+
+A
+~
+
+  Use some binary utility programs to print out the symbols that are
+  present in `quote_data.o'.  Review the previous lab if you have
+  forgotten which programs can print symbols in a binary object file.
+  Speculate as to which data might pertain to where potential options
+  are stored.
+
+
+B
+~
+
+  The entry point into the assembly code in `quote_data.o' is the
+  function `get_it'.  Use either the debugger or a disassembly of the
+  object to trace whether this functions performs the entire computation
+  or if other functions are also used. Use this along with other
+  observations of the content of the `quote_data.o' file to infer what
+  kind of structure the choices are stored in.
+
+
+C
+~
+
+  Use the debugger to step through the functions in `quote_data.o'.
+  Keep in mind that the parameters to the function follow the standard
+  convention: 1st param in register `%rdi', second in `%rsi', and so
+  forth.  You should be able to identify a loop in a critical function
+  in which the choices are present.  Use `print' and `x' commands in gdb
+  to examine data pointed to be registers to help identify where the
+  correct response is located.
+
+  Recall that you can examine memory addresses pointed to registers with
+  gdb commands like the following.
+  ,----
+  | (gdb) x/d $rax   # print memory pointed to by rax as a decimal integer
+  | (gdb) x/x $rax   # print memory pointed to by rax as a hex number
+  | (gdb) x/s $rax   # print memory pointed to by rax as a string
+  `----
+
+  Include what debugger techniques you used in your answer along with
+  the index of the correct completion.
