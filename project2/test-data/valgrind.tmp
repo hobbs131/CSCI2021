@@ -1,0 +1,49 @@
+==4105== Memcheck, a memory error detector
+==4105== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==4105== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==4105== Command: ./test_thermo_update
+==4105== 
+========================================
+PROBLEM 1A: test_thermo_update.c tests for themo_update.c
+TEST  1: set_temp_from_sensors()        zero-c           : ok
+TEST  2: set_temp_from_sensors()        zero-f           : ok
+TEST  3: set_temp_from_sensors()        64-c             : ok
+TEST  4: set_temp_from_sensors()        120-c            : ok
+TEST  5: set_temp_from_sensors()        32000-c          : ok
+TEST  6: set_temp_from_sensors()        32000-f          : ok
+TEST  7: set_temp_from_sensors()        18000-f          : ok
+TEST  8: set_temp_from_sensors()        18105-c          : ok
+TEST  9: set_temp_from_sensors()        64000-f          : ok
+TEST 10: set_display_from_temp()        zero-c           : OK
+TEST 11: set_display_from_temp()        zero-f           : OK
+TEST 12: set_display_from_temp()        64-c             : OK
+TEST 13: set_display_from_temp()        120-c            : OK
+TEST 14: set_display_from_temp()        32000-c          : OK
+TEST 15: set_display_from_temp()        32000-f          : OK
+TEST 16: set_display_from_temp()        18000-f          : OK
+TEST 17: set_display_from_temp()        18105-c          : OK
+TEST 18: set_display_from_temp()        64000-f          : OK
+TEST 19: thermo_update()                zero-c           : OK
+TEST 20: thermo_update()                zero-f           : OK
+TEST 21: thermo_update()                64-c             : OK
+TEST 22: thermo_update()                120-c            : OK
+TEST 23: thermo_update()                32000-c          : OK
+TEST 24: thermo_update()                32000-f          : OK
+TEST 25: thermo_update()                18000-f          : OK
+TEST 26: thermo_update()                18105-c          : OK
+TEST 27: thermo_update()                64000-f          : OK
+TEST 28: set_display_from_temp()        err-fahr-field   : OK
+TEST 29: set_display_from_temp()        err-big-temp     : OK
+TEST 30: thermo_update()                err-big-temp     : OK
+================================================================
+Passed: 30 / 30 tests with 0.5 points per test
+RESULTS: 15.0 / 15.0 points
+==4105== 
+==4105== HEAP SUMMARY:
+==4105==     in use at exit: 0 bytes in 0 blocks
+==4105==   total heap usage: 1 allocs, 1 frees, 8,192 bytes allocated
+==4105== 
+==4105== All heap blocks were freed -- no leaks are possible
+==4105== 
+==4105== For counts of detected and suppressed errors, rerun with: -v
+==4105== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

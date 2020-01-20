@@ -1,0 +1,33 @@
+THERMO_SENSOR_PORT set to: 51697
+set_temp_from_sensors(&temp );
+temp is {
+  .tenths_degrees = 308
+  .is_fahrenheit  = 0
+}
+Simulated temp is: 30.8 deg C
+
+Checking results for display bits
+set_display_from_temp(temp, &display);
+
+display is:
+        3         2         1         0
+index: 10987654321098765432109876543210
+bits:  00010000000100111101111111111111
+guide:  |    |    |    |    |    |    |
+index:  30        20        10        0
+
+Running thermo_update()
+
+THERMO_DISPLAY_PORT is:
+index:  3         2         1    0    0
+index: 10987654321098765432109876543210
+bits:  00010000000100111101111111111111
+guide:  |    |    |    |    |    |    |
+index:  30        20        10        0
+
+Thermometer Display:
+         ~~   ~~   ~~  o       
+           | |  | |  |  C      
+         ~~        ~~          
+           | |  | |  |         
+         ~~   ~~ o ~~          
