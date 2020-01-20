@@ -1,0 +1,376 @@
+                           __________________
+
+                            LAB 14 QUESTIONS
+                           __________________
+
+
+- Name: Tanner Hobbs
+- NetID: hobbs131
+
+Answer the questions below according to the lab specification. Write
+your answers directly in this text file and submit it to complete the
+lab.
+
+
+PROBLEM 1: Basic Library Linking
+================================
+
+(A)
+~~~
+
+  The file `do_math.c' contains some basic usage of the C library math
+  functions like `pow()'.  Compile this program using the command line
+  ,----
+  | > gcc do_math.c
+  `----
+  and show the results below which should be problematic. Describe why
+  the linker complains about functions like `cos' and `pow'.
+
+  *Note*: problems will arise on Linux systems with gcc: other
+  OS/compiler combinations may not cause any problems.
+
+  /tmp/ccnEEJv8.o: In function `main':
+do_math.c:(.text+0x2a): undefined reference to `cos'
+do_math.c:(.text+0x45): undefined reference to `sin'
+do_math.c:(.text+0x6c): undefined reference to `pow'
+collect2: error: ld returned 1 exit status
+
+There is a problem because the math library is not linked to the program.
+
+
+(B)
+~~~
+
+  In order to fix this problem, one must link the program against the
+  math library typically called `libm'. This can be done with the option
+  `-l' for "library" and `m' for the math library as shown:
+  ,----
+  | > gcc do_math.c -lm
+  `----
+
+  Show a run of the resulting executable after a successful compile
+  below.
+
+E is 2.718
+cos(E) is -0.912
+sin(E) is 0.411
+E^2 is 7.389
+program pid is 47326
+press any key to continue
+
+
+
+(C)
+~~~
+
+  After successfully compiling `do_math.c', use the `ldd' command to
+  examine which dynamically linked libraries it requires to
+  run. Assuming the executable is named `a.out', invoke the command like
+  this
+  ,----
+  | > ldd a.out
+  `----
+  Show the output for this command and note anything related to the math
+  library that is reported.
+
+  linux-vdso.so.1 (0x00007ffd10b67000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f6dc9341000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f6dc8f50000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f6dc98e1000)
+
+  libm is the math library which can be seen on the second line down.
+
+
+
+(D)
+~~~
+
+  Run the program which should report its Process ID (pid) before
+  pausing.  In a separate terminal, while the program is still running,
+  execute the pmap command to see the virtual address space for the
+  program (command `pmap <pid>'). Paste the results below and describe
+  any relation to the math library that is apparent.
+
+  000055b28e87d000      4K r-x-- a.out
+000055b28ea7d000      4K r---- a.out
+000055b28ea7e000      4K rw--- a.out
+000055b28eed1000    132K rw---   [ anon ]
+00007f5778434000   1948K r-x-- libc-2.27.so
+00007f577861b000   2048K ----- libc-2.27.so
+00007f577881b000     16K r---- libc-2.27.so
+00007f577881f000      8K rw--- libc-2.27.so
+00007f5778821000     16K rw---   [ anon ]
+00007f5778825000   1652K r-x-- libm-2.27.so
+00007f57789c2000   2044K ----- libm-2.27.so
+00007f5778bc1000      4K r---- libm-2.27.so
+00007f5778bc2000      4K rw--- libm-2.27.so
+00007f5778bc3000    156K r-x-- ld-2.27.so
+00007f5778d82000     20K rw---   [ anon ]
+00007f5778dea000      4K r---- ld-2.27.so
+00007f5778deb000      4K rw--- ld-2.27.so
+00007f5778dec000      4K rw---   [ anon ]
+00007ffcbc708000    136K rw---   [ stack ]
+00007ffcbc776000     12K r----   [ anon ]
+00007ffcbc779000      8K r-x--   [ anon ]
+ffffffffff600000      4K r-x--   [ anon ]
+ total             8232K
+
+As seen in the middle of the block of text, there are several libm locations specified.
+One can assume these are related to the math library.
+
+
+(E)
+~~~
+
+  Repeat the general steps above with the C file `do_pthreads.c' which
+  will require linking to the PThreads library with `-lpthread'.
+  - Compile to show error messages
+  - Compile successfully with proper linking and show output
+  - Call `ldd' on the executable
+  - While the program is paused, run `pmap' to see its virtual address
+    space
+
+  Show the output of these commands below.
+
+  part 1:
+  cxXL5Y3.o: In function `main':
+do_pthreads.c:(.text+0x63): undefined reference to `pthread_create'
+do_pthreads.c:(.text+0x80): undefined reference to `pthread_create'
+do_pthreads.c:(.text+0x9d): undefined reference to `pthread_join'
+collect2: error: ld returned 1 exit status
+
+  part 2:
+
+  doit: I am thread 1
+main: I am the main thread
+doit: I am thread 2
+program pid is 47749
+press any key to continue
+
+  part 3:
+linux-vdso.so.1 (0x00007ffc01dd3000)
+libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f25e47f6000)
+libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f25e4405000)
+/lib64/ld-linux-x86-64.so.2 (0x00007f25e4c17000)
+
+
+part 4:
+
+47876:   ./a.out
+00005576f8324000      4K r-x-- a.out
+00005576f8524000      4K r---- a.out
+00005576f8525000      4K rw--- a.out
+00005576f9063000    132K rw---   [ anon ]
+00007fd9ea599000      4K -----   [ anon ]
+00007fd9ea59a000   8192K rw---   [ anon ]
+00007fd9ead9a000      4K -----   [ anon ]
+00007fd9ead9b000   8192K rw---   [ anon ]
+00007fd9eb59b000   1948K r-x-- libc-2.27.so
+00007fd9eb782000   2048K ----- libc-2.27.so
+00007fd9eb982000     16K r---- libc-2.27.so
+00007fd9eb986000      8K rw--- libc-2.27.so
+00007fd9eb988000     16K rw---   [ anon ]
+00007fd9eb98c000    104K r-x-- libpthread-2.27.so
+00007fd9eb9a6000   2044K ----- libpthread-2.27.so
+00007fd9ebba5000      4K r---- libpthread-2.27.so
+00007fd9ebba6000      4K rw--- libpthread-2.27.so
+00007fd9ebba7000     16K rw---   [ anon ]
+00007fd9ebbab000    156K r-x-- ld-2.27.so
+00007fd9ebd6a000     20K rw---   [ anon ]
+00007fd9ebdd2000      4K r---- ld-2.27.so
+00007fd9ebdd3000      4K rw--- ld-2.27.so
+00007fd9ebdd4000      4K rw---   [ anon ]
+00007fffb341b000    136K rw---   [ stack ]
+00007fffb35ab000     12K r----   [ anon ]
+00007fffb35ae000      8K r-x--   [ anon ]
+ffffffffff600000      4K r-x--   [ anon ]
+ total            23092K
+
+
+
+
+
+PROBLEM 2: Linking Static Libraries
+===================================
+
+(A)
+~~~
+
+  Libraries come in two flavors. The default type is Dynamically Linked
+  Shared Libraries that were demonstrated above.  An older but easier to
+  understand type are Statically Linked libraries.
+
+  The search functions from Assignment 4 like `binary_array_search()'
+  have been formed into a Statically Linked Library in the directory
+  `libsearch_static/'.
+
+  Change into this directory and perform a
+  ,----
+  | > make
+  `----
+  to build the library.
+
+
+  Describe the commands you see issued for it and what command creates
+  the final library file. Note what file extension (`lib.something') the
+  static library has in your answer.
+
+  Cannot find libsearch_static directory. Searched A4, lab14.
+
+
+(B)
+~~~
+
+  Change back to the main lab directory where you will find a file
+  called `do_search.c' which uses search functions from the
+  library. Attempting to compile this program on its own leads to
+  several errors.  The first is simple:
+  ,----
+  | > gcc do_search.c
+  | do_search.c:7:10: fatal error: ds_search.h: No such file or directory
+  |  #include "ds_search.h"
+  |           ^~~~~~~~~~~~~
+  | compilation terminated.
+  `----
+  Unable to find a file to include, the compiler terminates.
+
+  Fix this by notifying the compiler where that the `ds_search.h' file
+  is in the library directory:
+  ,----
+  | > gcc do_search.c -I ds_search_static
+  | ...
+  `----
+  The `-I' option allows additional directories to be searched for
+  `#include' directive files. However, this is not the only problem.
+
+  Show the linker errors that result from the compiling this way and
+  describe why they appear.
+
+  /tmp/ccL1L0O6.o: In function `main':
+do_search.c:(.text+0x2b): undefined reference to `make_sequential_list'
+do_search.c:(.text+0x69): undefined reference to `linkedlist_search'
+do_search.c:(.text+0x9d): undefined reference to `linkedlist_search'
+do_search.c:(.text+0x132): undefined reference to `list_free'
+collect2: error: ld returned 1 exit status
+
+This error occurs because the library is not linked.
+
+
+(C)
+~~~
+
+  The compiler can be notified of additional places to look for library
+  code beyond standard system locations with the `-L' option.  In this
+  case, the library `ds_search_static' contains the library. Finally,
+  one must specify an additional library to link against,
+  `libds_search.a' in this case though invocation drops the `lib' and
+  `.a' parts. Run the following command:
+  ,----
+  | > gcc do_search.c  -I ds_search_static  -L ds_search_static  -lds_search
+  | #                  ^^ includes dir ^^^  ^^ libray dir ^^^^^  ^^lib name^
+  `----
+  and then run the resulting executable to show its output.
+
+
+  Does not compile. Shows following output
+
+  hobbs131@csel-vole-42:/home/hobbs131/CSCI2021/lab14 $ gcc do_search.c -I ds_search_static -L ds_search_static -lds_search
+/usr/bin/ld: ds_search_static/libds_search.a(tree.o): unable to initialize decompress status for section .debug_info
+/usr/bin/ld: ds_search_static/libds_search.a(tree.o): unable to initialize decompress status for section .debug_info
+/usr/bin/ld: ds_search_static/libds_search.a(list.o): unable to initialize decompress status for section .debug_info
+/usr/bin/ld: ds_search_static/libds_search.a(list.o): unable to initialize decompress status for section .debug_info
+ds_search_static/libds_search.a: error adding symbols: File format not recognized
+collect2: error: ld returned 1 exit status
+
+
+
+(D)
+~~~
+
+  Run the `nm' command to show the symbol names present in the resulting
+  executable.  Verify that the text definitions for library functions
+  required by `do_search.c' are present and well-defined.  Show your
+  output for `nm'
+
+  Identify some library functions that are present in the executable
+  that are not explicitly mentioned but are required for some library
+  functions that are needed (thing random number generation).
+
+  Are ALL functions from libds_search.a copied in or only those that are
+  needed?
+
+  Can not show output as there is no executable to run nm against. See problem C.
+
+
+Problem 3: Creating Dynamically Linked Shared Libraries
+=======================================================
+
+(A)
+~~~
+
+  Dynamically Linked Shared Libraries differ from static counterparts in
+  that no definitions are copied into an executable.  Instead, when
+  creating programs using such libraries, definitions for the functions
+  in the dynamically linked libraries are left undefined and marked as
+  "link at runtime."  On loading the program, the location of library
+  code is mapped into the virtual address space of the program. Since
+  multiple programs can map the same physical address into their virtual
+  address space, only one copy of functions such as `printf()' need to
+  be in memory for the whole system.
+
+  The provided code directory `ds_search_dynamic/' contains a `Makefile'
+  which will build a shared object (.so) version of a data structure
+  search library as follows.
+  ,----
+  | > cd ds_search_dynamic/
+  |
+  | > make
+  | gcc -g -Wall -fpic -c tree.c
+  | gcc -g -Wall -fpic -c array.c
+  | gcc -g -Wall -fpic -c list.c
+  | gcc -g -Wall -fpic -c util.c
+  | gcc -shared -o libds_search.so tree.o array.o list.o util.o
+  |
+  | > file libds_search.so
+  | libds_search.so: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked
+  |
+  | > cd ..
+  `----
+
+  Compile and link the provided `do_search.c' program against this
+  library as follows.
+
+  ,----
+  | > gcc do_search.c -lds_search -I ds_search_dynamic -L ds_search_dynamic
+  `----
+
+  Run the `ldd' utility to see what dynamic library dependencies the
+  resulting `a.out' program has and attempt to run it as shown.
+  ,----
+  | > ldd a.out
+  | ...
+  |
+  | > ./a.out
+  | ...
+  `----
+
+  Show the output for these commands.
+
+  bbs131@csel-vole-42:/home/hobbs131/CSCI2021/lab14 $ ldd a.out
+	linux-vdso.so.1 (0x00007ffe0cbe7000)
+	libds_search.so => not found
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f7d89283000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f7d89876000)
+hobbs131@csel-vole-42:/home/hobbs131/CSCI2021/lab14 $ ./a.out
+./a.out: error while loading shared libraries: libds_search.so: cannot open shared object file: No such file or directory
+
+
+
+(B)
+~~~
+
+  Describe any problems that you encounter with running the program and
+  how to resolve them using environment variables that control where the
+  dynamic linker searches for library dependencies.
+
+cannot open shared object file. You can resolve this by linking the two programs through command line args.
